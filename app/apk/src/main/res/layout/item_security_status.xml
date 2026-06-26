@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <import type="com.topjohnwu.magisk.ui.security.SecurityStatusItem" />
+        <variable
+            name="item"
+            type="SecurityStatusItem" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/l_50">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{item.title}"
+            android:textAppearance="@style/AppearanceFoundation.Caption.Variant"
+            android:textSize="11sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="@{item.value}"
+            android:textAppearance="@style/AppearanceFoundation.Caption" />
+
+    </LinearLayout>
+
+</layout>

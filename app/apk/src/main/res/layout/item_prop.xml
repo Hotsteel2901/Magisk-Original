@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="com.topjohnwu.magisk.ui.props.PropsViewModel.PropItem" />
+        <variable
+            name="item"
+            type="PropItem" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        style="@style/WidgetFoundation.Card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/l_50"
+        android:layout_marginStart="@dimen/l1"
+        android:layout_marginEnd="@dimen/l1"
+        android:onClick="@{() -> item.toggleExpand()}"
+        android:focusable="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/l1">
+
+            <!-- Key row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@{item.key}"
+                    android:textAppearance="@style/AppearanceFoundation.Caption"
+                    android:fontFamily="monospace"
+                    android:textIsSelectable="true" />
+
+                <com.google.android.material.chip.Chip
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{item.category}"
+                    android:textSize="10sp" />
+
+            </LinearLayout>
+
+            <!-- Value -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@{item.displayValue}"
+                android:textAppearance="@style/AppearanceFoundation.Caption.Variant"
+                android:fontFamily="monospace" />
+
+            <!-- Expanded content -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="@{item.expanded ? View.VISIBLE : View.GONE}"
+                android:layout_marginTop="@dimen/l_50">
+
+                <!-- SELinux context -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{item.context}"
+                    android:textAppearance="@style/AppearanceFoundation.Caption.Variant"
+                    android:fontFamily="monospace"
+                    android:visibility="@{item.context.isEmpty() ? View.GONE : View.VISIBLE}" />
+
+                <!-- Info tags -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="4dp">
+
+                    <com.google.android.material.chip.Chip
+                        goneUnless="@{item.isReadOnly}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/props_read_only"
+                        android:textSize="10sp" />
+
+                    <com.google.android.material.chip.Chip
+                        goneUnless="@{item.isPersistent}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/props_persistent"
+                        android:textSize="10sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</layout>

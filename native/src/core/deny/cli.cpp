@@ -13,14 +13,17 @@ R"EOF(DenyList Config CLI
 
 Usage: magisk --denylist [action [arguments...] ]
 Actions:
-   status          Return the enforcement status
-   enable          Enable denylist enforcement
-   disable         Disable denylist enforcement
-   add PKG [PROC]  Add a new target to the denylist
-   rm PKG [PROC]   Remove target(s) from the denylist
-   ls              Print the current denylist
-   exec CMDs...    Execute commands in isolated mount
-                   namespace and do all unmounts
+   status              Return the enforcement status
+   enable              Enable denylist enforcement
+   disable             Disable denylist enforcement
+   add PKG [PROC]      Add a new target to the denylist
+   rm PKG [PROC]       Remove target(s) from the denylist
+   ls                  Print the current denylist
+   add_batch N PAIRS.. Batch add targets (PKG|PROC pairs)
+   rm_batch N PAIRS..  Batch remove targets (PKG|PROC pairs)
+   clear_all           Clear all denylist entries
+   exec CMDs...        Execute commands in isolated mount
+                       namespace and do all unmounts
 
 )EOF");
     exit(1);
@@ -54,6 +57,15 @@ void denylist_handler(int client) {
     case DenyRequest::STATUS:
         res = denylist_enforced ? DenyResponse::ENFORCED : DenyResponse::NOT_ENFORCED;
         break;
+    case DenyRequest::ADD_BATCH:
+        res = add_batch_list(client);
+        break;
+    case DenyRequest::REMOVE_BATCH:
+        res = rm_batch_list(client);
+        break;
+    case DenyRequest::CLEAR_ALL:
+        res = clear_all_list();
+        break;
     default:
         // Unknown request code
         break;
@@ -86,6 +98,12 @@ int denylist_cli(rust::Vec<rust::String> &args) {
         req = DenyRequest::LIST;
     else if (argv[0] == "status"sv)
         req = DenyRequest::STATUS;
+    else if (argv[0] == "add_batch"sv)
+        req = DenyRequest::ADD_BATCH;
+    else if (argv[0] == "rm_batch"sv)
+        req = DenyRequest::REMOVE_BATCH;
+    else if (argv[0] == "clear_all"sv)
+        req = DenyRequest::CLEAR_ALL;
     else if (argv[0] == "exec"sv && argc > 1) {
         xunshare(CLONE_NEWNS);
         xmount(nullptr, "/", nullptr, MS_PRIVATE | MS_REC, nullptr);
@@ -102,6 +120,21 @@ int denylist_cli(rust::Vec<rust::String> &args) {
     if (req == DenyRequest::ADD || req == DenyRequest::REMOVE) {
         write_string(fd, argv[1]);
         write_string(fd, argv[2] ? argv[2] : "");
+    }
+    if (req == DenyRequest::ADD_BATCH || req == DenyRequest::REMOVE_BATCH) {
+        int count = argc > 1 ? atoi(argv[1]) : 0;
+        write_int(fd, count);
+        for (int i = 0; i < count && (i + 2) < (int)argc; i++) {
+            string_view pair(argv[i + 2]);
+            auto sep = pair.find('|');
+            if (sep != string_view::npos) {
+                write_string(fd, string(pair.substr(0, sep)));
+                write_string(fd, string(pair.substr(sep + 1)));
+            } else {
+                write_string(fd, string(pair));
+                write_string(fd, "");
+            }
+        }
     }
 
     // Get response

@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="com.topjohnwu.magisk.ui.boot.BootAnalyzerViewModel" />
+        <variable
+            name="viewModel"
+            type="BootAnalyzerViewModel" />
+    </data>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingTop="@dimen/internal_action_bar_size"
+        android:paddingBottom="@dimen/l3">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/l1">
+
+            <!-- File selection card -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/WidgetFoundation.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/l1">
+
+                    <Button
+                        android:id="@+id/select_file_button"
+                        style="@style/WidgetFoundation.Button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/select_boot_image"
+                        android:textAllCaps="false" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/l_50"
+                        android:text="@{viewModel.selectedFileName}"
+                        android:visibility="@{viewModel.hasFile ? View.VISIBLE : View.GONE}"
+                        android:textAppearance="@style/AppearanceFoundation.Caption.Variant" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Loading indicator -->
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/l1"
+                android:visibility="@{viewModel.loading ? View.VISIBLE : View.GONE}" />
+
+            <!-- Analysis results -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="@{viewModel.analysis != null ? View.VISIBLE : View.GONE}">
+
+                <!-- Header info card -->
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/WidgetFoundation.Card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/l1">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/l1">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/boot_header_info"
+                            android:textAppearance="@style/AppearanceFoundation.Title" />
+
+                        <TextView
+                            android:id="@+id/header_version"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/l_50"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/header_page_size"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/header_os_version"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/header_cmdline"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="13sp"
+                            android:fontFamily="monospace" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Sections card -->
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/WidgetFoundation.Card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/l1">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/l1">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/boot_sections"
+                            android:textAppearance="@style/AppearanceFoundation.Title" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/sections_list"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:nestedScrollingEnabled="false"
+                            app:items="@{viewModel.analysis.sections}" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- OEM flags card -->
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/WidgetFoundation.Card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/l1">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/l1">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/oem_flags"
+                            android:textAppearance="@style/AppearanceFoundation.Title" />
+
+                        <com.google.android.material.chip.ChipGroup
+                            android:id="@+id/oem_chips"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/l_50" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Ramdisk status card -->
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/WidgetFoundation.Card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/l1">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/l1">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/ramdisk_status"
+                            android:textAppearance="@style/AppearanceFoundation.Title" />
+
+                        <TextView
+                            android:id="@+id/ramdisk_status_value"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/l_50" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/ramdisk_list"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:nestedScrollingEnabled="false"
+                            android:layout_marginTop="@dimen/l_50"
+                            app:items="@{viewModel.analysis.ramdiskFiles}" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Patch preview card -->
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/WidgetFoundation.Card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/l1">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/l1">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/patch_preview"
+                            android:textAppearance="@style/AppearanceFoundation.Title" />
+
+                        <TextView
+                            android:id="@+id/patch_verity"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/l_50"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/patch_encryption"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/patch_vbmeta"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/patch_legacy_sar"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="13sp" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</layout>

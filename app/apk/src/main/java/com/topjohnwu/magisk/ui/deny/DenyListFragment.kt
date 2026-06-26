@@ -13,6 +13,7 @@ import com.topjohnwu.magisk.arch.BaseFragment
 import com.topjohnwu.magisk.arch.viewModel
 import com.topjohnwu.magisk.core.ktx.hideKeyboard
 import com.topjohnwu.magisk.databinding.FragmentDenyMd2Binding
+import com.topjohnwu.magisk.dialog.SmartDetectDialog
 import rikka.recyclerview.addEdgeSpacing
 import rikka.recyclerview.addItemSpacing
 import rikka.recyclerview.fixEdgeEffect
@@ -85,6 +86,14 @@ class DenyListFragment : BaseFragment<FragmentDenyMd2Binding>(), MenuProvider {
                 val check = !item.isChecked
                 viewModel.isShowOS = check
                 item.isChecked = check
+                return true
+            }
+            R.id.action_smart_detect -> {
+                SmartDetectDialog(this).show()
+                return true
+            }
+            R.id.action_presets -> {
+                viewModel.applyPresets()
                 return true
             }
         }

@@ -108,6 +108,22 @@
             app:popEnterAnim="@anim/fragment_enter_pop"
             app:popExitAnim="@anim/fragment_exit_pop" />
 
+        <action
+            android:id="@+id/action_settingsFragment_to_propsFragment"
+            app:destination="@id/propsFragment"
+            app:enterAnim="@anim/fragment_enter"
+            app:exitAnim="@anim/fragment_exit"
+            app:popEnterAnim="@anim/fragment_enter_pop"
+            app:popExitAnim="@anim/fragment_exit_pop" />
+
+        <action
+            android:id="@+id/action_settingsFragment_to_bootAnalyzerFragment"
+            app:destination="@id/bootAnalyzerFragment"
+            app:enterAnim="@anim/fragment_enter"
+            app:exitAnim="@anim/fragment_exit"
+            app:popEnterAnim="@anim/fragment_enter_pop"
+            app:popExitAnim="@anim/fragment_exit_pop" />
+
     </fragment>
 
     <fragment
@@ -121,6 +137,18 @@
         android:name="com.topjohnwu.magisk.ui.theme.ThemeFragment"
         android:label="ThemeFragment"
         tools:layout="@layout/fragment_theme_md2" />
+
+    <fragment
+        android:id="@+id/propsFragment"
+        android:name="com.topjohnwu.magisk.ui.props.PropsFragment"
+        android:label="PropsFragment"
+        tools:layout="@layout/fragment_props_md2" />
+
+    <fragment
+        android:id="@+id/bootAnalyzerFragment"
+        android:name="com.topjohnwu.magisk.ui.boot.BootAnalyzerFragment"
+        android:label="BootAnalyzerFragment"
+        tools:layout="@layout/fragment_boot_analyzer_md2" />
 
     <action
         android:id="@+id/action_homeFragment"

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="com.topjohnwu.magisk.ui.home.HomeViewModel" />
+        <variable
+            name="viewModel"
+            type="HomeViewModel" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        style="@style/WidgetFoundation.Card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/l1"
+        android:layout_marginEnd="@dimen/l1"
+        android:layout_marginTop="@dimen/l1"
+        android:focusable="false">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/l1">
+
+            <!-- Title -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/security_audit_title"
+                android:textAppearance="@style/AppearanceFoundation.Title" />
+
+            <!-- Status Grid -->
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/l_50"
+                android:columnCount="2"
+                android:rowCount="2">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:orientation="vertical"
+                    android:padding="@dimen/l_50">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/selinux_status"
+                        android:textAppearance="@style/AppearanceFoundation.Caption.Variant"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:id="@+id/selinux_value"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/AppearanceFoundation.Caption" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:orientation="vertical"
+                    android:padding="@dimen/l_50">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/encryption_status"
+                        android:textAppearance="@style/AppearanceFoundation.Caption.Variant"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:id="@+id/encryption_value"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/AppearanceFoundation.Caption" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:orientation="vertical"
+                    android:padding="@dimen/l_50">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/root_access_mode"
+                        android:textAppearance="@style/AppearanceFoundation.Caption.Variant"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:id="@+id/root_access_value"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/AppearanceFoundation.Caption" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:orientation="vertical"
+                    android:padding="@dimen/l_50">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/denylist_status"
+                        android:textAppearance="@style/AppearanceFoundation.Caption.Variant"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:id="@+id/denylist_value"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/AppearanceFoundation.Caption" />
+
+                </LinearLayout>
+
+            </GridLayout>
+
+            <!-- Risk list -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/risk_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:layout_marginTop="@dimen/l_50"
+                app:items="@{viewModel.riskItems}" />
+
+            <!-- Boot layout info (collapsed) -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/boot_info_toggle"
+                style="@style/WidgetFoundation.Button.Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/boot_layout_info"
+                android:textAllCaps="false"
+                android:textSize="12sp" />
+
+            <LinearLayout
+                android:id="@+id/boot_info_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:paddingStart="@dimen/l_50">
+
+                <TextView
+                    android:id="@+id/boot_sar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/boot_ab"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/boot_slot"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/boot_ramdisk"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</layout>

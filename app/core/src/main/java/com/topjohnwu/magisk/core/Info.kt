@@ -53,7 +53,8 @@ object Info {
     @JvmStatic val isFDE get() = crypto == "block"
     @JvmStatic var ramdisk = false
         private set
-    private var crypto = ""
+    internal var crypto = ""
+        private set
 
     val isEmulator =
         Build.DEVICE.contains("vsoc")

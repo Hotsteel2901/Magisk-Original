@@ -284,4 +284,76 @@
     <string name="app_not_found">No app found to handle this action</string>
     <string name="reboot_apply_change">Reboot to apply changes</string>
     <string name="restore_app_confirmation">This will restore the hidden app back to the original app. Do you really want to do this?</string>
+
+    <!--DenyList Smart Mode-->
+    <string name="deny_smart_detect">Smart Detect</string>
+    <string name="deny_smart_detect_empty">No apps detected that likely need root hiding.</string>
+    <string name="deny_apply_selected">Apply Selected</string>
+    <string name="deny_presets">Presets</string>
+    <string name="deny_preset_banking">Banking</string>
+    <string name="deny_preset_payment">Payment</string>
+    <string name="deny_preset_enterprise">Enterprise</string>
+    <string name="deny_preset_streaming">Streaming</string>
+    <string name="deny_preset_gaming">Gaming</string>
+    <string name="deny_preset_social">Social</string>
+    <string name="deny_subscription_url">Subscription URL</string>
+    <string name="deny_last_update">Last updated: %1$s</string>
+    <string name="deny_import_json">Import from JSON</string>
+    <string name="deny_export_json">Export as JSON</string>
+    <string name="deny_clear_all">Clear All</string>
+    <string name="deny_clear_all_confirm">Clear all DenyList entries?</string>
+
+    <!--Security Audit Dashboard-->
+    <string name="security_audit_title">Security Audit</string>
+    <string name="selinux_status">SELinux</string>
+    <string name="encryption_status">Encryption</string>
+    <string name="root_access_mode">Root Access</string>
+    <string name="denylist_status">DenyList</string>
+    <string name="boot_layout_info">Boot Layout Info</string>
+    <string name="risk_high">HIGH</string>
+    <string name="risk_medium">MEDIUM</string>
+    <string name="risk_low">LOW</string>
+    <string name="security_audit_enforcing">Enforcing</string>
+    <string name="security_audit_permissive">Permissive</string>
+    <string name="security_audit_disabled">Disabled</string>
+    <string name="security_audit_fde">Full Disk</string>
+    <string name="security_audit_fbe">File-based</string>
+    <string name="security_audit_none">None</string>
+    <string name="security_audit_zygisk">Zygisk</string>
+    <string name="security_audit_logcat">Logcat</string>
+    <string name="security_audit_boot_sar">SAR: %1$s</string>
+    <string name="security_audit_boot_ab">A/B: %1$s</string>
+    <string name="security_audit_boot_slot">Slot: %1$s</string>
+    <string name="security_audit_boot_ramdisk">Ramdisk: %1$s</string>
+    <string name="zygisk_modules_count">%1$d modules loaded</string>
+
+    <!--Property Browser-->
+    <string name="props_browser">Properties</string>
+    <string name="props_search">Search Properties</string>
+    <string name="props_search_hint">Search by name or value</string>
+    <string name="props_all">All</string>
+    <string name="props_modify_title">Modify Property</string>
+    <string name="props_delete_title">Delete Property</string>
+    <string name="props_read_only">Read Only</string>
+    <string name="props_persistent">Persistent</string>
+    <string name="props_modify_bypass">Modify (bypass svc)</string>
+    <string name="props_favorites">Favorites</string>
+
+    <!--Boot Analyzer-->
+    <string name="boot_analyzer">Boot Analyzer</string>
+    <string name="select_boot_image">Select Boot Image</string>
+    <string name="boot_header_info">Header Info</string>
+    <string name="boot_sections">Partitions</string>
+    <string name="oem_flags">OEM Flags</string>
+    <string name="ramdisk_status">Ramdisk Status</string>
+    <string name="patch_preview">Patch Preview</string>
+    <string name="boot_stock">Stock</string>
+    <string name="boot_magisk">Magisk</string>
+    <string name="boot_unsupported">Unsupported</string>
+    <string name="patch_verity">Patch dm-verity: %1$s</string>
+    <string name="patch_encryption">Patch encryption: %1$s</string>
+    <string name="patch_vbmeta">Patch vbmeta: %1$s</string>
+    <string name="patch_legacy_sar">Legacy SAR: %1$s</string>
+    <string name="yes_text">Yes</string>
+    <string name="no_text">No</string>
 </resources>

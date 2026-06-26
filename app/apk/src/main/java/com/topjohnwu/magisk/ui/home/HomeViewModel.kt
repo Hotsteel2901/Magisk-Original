@@ -13,6 +13,7 @@ import com.topjohnwu.magisk.arch.AsyncLoadViewModel
 import com.topjohnwu.magisk.arch.ContextExecutor
 import com.topjohnwu.magisk.arch.UIActivity
 import com.topjohnwu.magisk.arch.ViewEvent
+import com.topjohnwu.magisk.core.AppContext
 import com.topjohnwu.magisk.core.BuildConfig
 import com.topjohnwu.magisk.core.Config
 import com.topjohnwu.magisk.core.Info
@@ -21,9 +22,11 @@ import com.topjohnwu.magisk.core.download.Subject.App
 import com.topjohnwu.magisk.core.ktx.await
 import com.topjohnwu.magisk.core.ktx.toast
 import com.topjohnwu.magisk.core.repository.NetworkService
+import com.topjohnwu.magisk.core.security.SecurityAudit
 import com.topjohnwu.magisk.core.utils.asText
 import com.topjohnwu.magisk.databinding.bindExtra
 import com.topjohnwu.magisk.databinding.set
+import com.topjohnwu.magisk.ui.security.RiskRvItem
 import com.topjohnwu.magisk.dialog.EnvFixDialog
 import com.topjohnwu.magisk.dialog.ManagerInstallDialog
 import com.topjohnwu.magisk.dialog.UninstallDialog
@@ -85,6 +88,44 @@ class HomeViewModel(
         it.put(BR.viewModel, this)
     }
 
+    // Security Audit
+    @get:Bindable
+    var auditReport: SecurityAudit.AuditReport? = null
+        set(value) = set(value, field, { field = it }, BR.auditReport)
+
+    val selinuxMode: String
+        get() = auditReport?.selinuxStatus?.mode?.name ?: "UNKNOWN"
+
+    val encryptionType: String
+        get() = auditReport?.encryptionStatus?.type?.name ?: "UNKNOWN"
+
+    val rootAccessModeText: String
+        get() = when (auditReport?.suStatistics?.rootAccessMode) {
+            Config.Value.ROOT_ACCESS_DISABLED -> "Disabled"
+            Config.Value.ROOT_ACCESS_APPS_ONLY -> "Apps only"
+            Config.Value.ROOT_ACCESS_ADB_ONLY -> "ADB only"
+            Config.Value.ROOT_ACCESS_APPS_AND_ADB -> "Apps and ADB"
+            else -> "Unknown"
+        }
+
+    val denyListStatusText: String
+        get() = if (auditReport?.denyListStatus?.enforced == true) "Enforced" else "Not enforced"
+
+    val riskItems: List<RiskRvItem>
+        get() = auditReport?.riskAssessment?.map { RiskRvItem(it) } ?: emptyList()
+
+    val bootSarText: String
+        get() = "SAR: ${if (auditReport?.bootLayout?.isSAR == true) "Yes" else "No"}"
+
+    val bootAbText: String
+        get() = "A/B: ${if (auditReport?.bootLayout?.isAB == true) "Yes" else "No"}"
+
+    val bootSlotText: String
+        get() = "Slot: ${auditReport?.bootLayout?.slot ?: "N/A"}"
+
+    val bootRamdiskText: String
+        get() = "Ramdisk: ${if (auditReport?.bootLayout?.hasRamdisk == true) "Yes" else "No"}"
+
     companion object {
         private var checkedEnv = false
     }
@@ -105,6 +146,14 @@ class HomeViewModel(
             managerRemoteVersion = CoreR.string.not_available.asText()
         }
         ensureEnv()
+
+        // Collect security audit data
+        if (Info.isRooted) {
+            try {
+                val report = SecurityAudit.collect(Shell.getShell(), AppContext)
+                auditReport = report
+            } catch (_: Exception) {}
+        }
     }
 
     override fun onNetworkChanged(network: Boolean) = startLoading()

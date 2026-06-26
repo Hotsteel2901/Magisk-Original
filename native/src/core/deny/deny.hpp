@@ -12,6 +12,9 @@ enum : int {
     REMOVE,
     LIST,
     STATUS,
+    ADD_BATCH,
+    REMOVE_BATCH,
+    CLEAR_ALL,
 
     END
 };
@@ -38,6 +41,9 @@ int disable_deny();
 int add_list(int client);
 int rm_list(int client);
 void ls_list(int client);
+int add_batch_list(int client);
+int rm_batch_list(int client);
+int clear_all_list();
 
 bool proc_context_match(int pid, std::string_view context);
 void *logcat(void *arg);

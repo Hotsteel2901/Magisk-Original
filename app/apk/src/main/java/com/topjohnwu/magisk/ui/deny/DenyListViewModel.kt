@@ -8,6 +8,7 @@ import com.topjohnwu.magisk.BR
 import com.topjohnwu.magisk.arch.AsyncLoadViewModel
 import com.topjohnwu.magisk.core.AppContext
 import com.topjohnwu.magisk.core.ktx.concurrentMap
+import com.topjohnwu.magisk.core.deny.DenyListPresets
 import com.topjohnwu.magisk.databinding.bindExtra
 import com.topjohnwu.magisk.databinding.filterList
 import com.topjohnwu.magisk.databinding.set
@@ -85,5 +86,29 @@ class DenyListViewModel : AsyncLoadViewModel() {
             (it.isChecked || (filterSystem() && filterOS())) && filterQuery()
         }
         loading = false
+    }
+
+    fun applyPresets() {
+        val installedApps = items.map { it.info.packageName }.toSet()
+        val presets = DenyListPresets.getAllInstalledPresets(installedApps)
+        if (presets.isEmpty()) return
+
+        val toAdd = mutableListOf<Pair<String, String>>()
+        presets.values.flatten().forEach { entry ->
+            if (entry.procs.isEmpty()) {
+                toAdd.add(entry.pkg to entry.pkg)
+            } else {
+                entry.procs.forEach { proc ->
+                    toAdd.add(entry.pkg to proc)
+                }
+            }
+        }
+
+        if (toAdd.isNotEmpty()) {
+            val pairs = toAdd.joinToString(" ") { "${it.first}|${it.second}" }
+            Shell.cmd("magisk --denylist add_batch ${toAdd.size} $pairs").submit {
+                startLoading()
+            }
+        }
     }
 }

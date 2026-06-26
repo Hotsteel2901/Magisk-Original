@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <import type="com.topjohnwu.magisk.ui.boot.BootAnalyzerViewModel.RamdiskFileEntry" />
+        <variable
+            name="item"
+            type="RamdiskFileEntry" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingVertical="2dp"
+        android:paddingHorizontal="@dimen/l_50">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@{item.path}"
+            android:textAppearance="@style/AppearanceFoundation.Caption.Variant"
+            android:fontFamily="monospace"
+            android:textSize="11sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{String.valueOf(item.size)}"
+            android:textAppearance="@style/AppearanceFoundation.Caption.Variant"
+            android:textSize="11sp" />
+
+    </LinearLayout>
+
+</layout>

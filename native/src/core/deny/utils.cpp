@@ -438,3 +438,103 @@ void update_deny_flags(int uid, rust::Str process, uint32_t &flags) {
         flags |= +ZygiskStateFlags::DenyListEnforced;
     }
 }
+
+int add_batch_list(int client) {
+    int count = read_int(client);
+
+    mutex_guard lock(data_lock);
+    if (!ensure_data())
+        return DenyResponse::ERROR;
+
+    int added = 0;
+    for (int i = 0; i < count; i++) {
+        string pkg = read_string(client);
+        string proc = read_string(client);
+
+        if (proc.empty())
+            proc = pkg;
+
+        if (!validate(pkg.data(), proc.data()))
+            continue;
+
+        int app_id = get_app_id(pkg);
+        if (app_id == 0)
+            continue;
+
+        if (!add_hide_set(pkg.data(), proc.data()))
+            continue;
+
+        auto it = pkg_to_procs.find(pkg);
+        if (it != pkg_to_procs.end()) {
+            update_app_id(app_id, it->first, false);
+        }
+
+        char sql[4096];
+        ssprintf(sql, sizeof(sql),
+                "INSERT OR IGNORE INTO denylist (package_name, process) VALUES('%s', '%s')",
+                pkg.data(), proc.data());
+        db_exec(sql);
+        added++;
+    }
+
+    return added > 0 ? DenyResponse::OK : DenyResponse::ERROR;
+}
+
+int rm_batch_list(int client) {
+    int count = read_int(client);
+
+    mutex_guard lock(data_lock);
+    if (!ensure_data())
+        return DenyResponse::ERROR;
+
+    int removed = 0;
+    for (int i = 0; i < count; i++) {
+        string pkg = read_string(client);
+        string proc = read_string(client);
+
+        auto it = pkg_to_procs.find(pkg);
+        if (it == pkg_to_procs.end())
+            continue;
+
+        if (proc.empty()) {
+            update_app_id(get_app_id(pkg), it->first, true);
+            pkg_to_procs.erase(it);
+            removed++;
+        } else if (it->second.erase(proc) != 0) {
+            removed++;
+            if (it->second.empty()) {
+                update_app_id(get_app_id(pkg), it->first, true);
+                pkg_to_procs.erase(it);
+            }
+        }
+    }
+
+    if (removed > 0) {
+        // Rebuild the denylist table from memory
+        db_exec("DELETE FROM denylist");
+        char sql[4096];
+        for (const auto &[pkg, procs] : pkg_to_procs) {
+            for (const auto &proc : procs) {
+                ssprintf(sql, sizeof(sql),
+                        "INSERT INTO denylist (package_name, process) VALUES('%s', '%s')",
+                        pkg.data(), proc.data());
+                db_exec(sql);
+            }
+        }
+    }
+
+    return removed > 0 ? DenyResponse::OK : DenyResponse::ERROR;
+}
+
+int clear_all_list() {
+    mutex_guard lock(data_lock);
+    if (!ensure_data())
+        return DenyResponse::ERROR;
+
+    pkg_to_procs.clear();
+    app_id_to_pkgs.clear();
+    db_exec("DELETE FROM denylist");
+
+    LOGI("denylist: cleared all entries\n");
+    return DenyResponse::OK;
+}
